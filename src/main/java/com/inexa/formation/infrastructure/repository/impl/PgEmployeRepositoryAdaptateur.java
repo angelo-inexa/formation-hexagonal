@@ -2,7 +2,8 @@ package com.inexa.formation.infrastructure.repository.impl;
 
 import com.inexa.formation.core.employe.application.port.EmployeRepositoryPort;
 import com.inexa.formation.core.employe.domaine.entite.Employe;
-import com.inexa.formation.core.employe.domaine.objetvaleur.Civilite;
+import com.inexa.formation.infrastructure.entity.EmployeTable;
+import com.inexa.formation.infrastructure.mapper.EmployeMapper;
 import com.inexa.formation.infrastructure.repository.EmployeRepositoryJpa;
 import org.springframework.stereotype.Repository;
 
@@ -12,16 +13,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PgEmployeRepositoryAdaptateur implements EmployeRepositoryPort {
     private final EmployeRepositoryJpa employeRepositoryJpa;
+    private final EmployeMapper employeMapper;
 
     public PgEmployeRepositoryAdaptateur(EmployeRepositoryJpa employeRepositoryJpa) {
         this.employeRepositoryJpa = employeRepositoryJpa;
+        this.employeMapper = EmployeMapper.INSTANCE;
     }
 
     @Override
     public void enregistrer(Employe employe) {
-        String nom = employe.getNom();
-        String prenom = employe.getPrenom();
-        Civilite civilite = employe.getCivilite();
-
+        EmployeTable employeTable = employeMapper.employeVersEmployeTable(employe);
+        this.employeRepositoryJpa.save(employeTable);
     }
 }
